@@ -1,0 +1,498 @@
+<!-- index.html — с объяснением -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unplug — Digital Wellbeing</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        :root {
+            --bg: #0a0f0a;
+            --surface: rgba(255, 255, 255, 0.02);
+            --border: rgba(255, 255, 255, 0.06);
+            --text: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.45);
+            --accent-1: #10b981;
+            --accent-2: #84cc16;
+            --input-bg: rgba(255, 255, 255, 0.03);
+            --input-border: rgba(255, 255, 255, 0.08);
+            --grid-color: rgba(16, 185, 129, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .bg-base {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, #0d1a0d 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, #0a120a 0%, transparent 50%),
+                #0a0f0a;
+            z-index: 0;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 1;
+            opacity: 0.6;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+        }
+
+        .bg-noise {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-size: 256px 256px;
+            pointer-events: none;
+        }
+
+        .bg-ambient {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .bg-ambient-1 {
+            width: 500px;
+            height: 500px;
+            background: rgba(16, 185, 129, 0.12);
+            top: -150px;
+            left: -100px;
+            animation: drift1 30s ease-in-out infinite;
+        }
+
+        .bg-ambient-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(132, 204, 22, 0.08);
+            bottom: -100px;
+            right: -80px;
+            animation: drift2 35s ease-in-out infinite;
+        }
+
+        @keyframes drift1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, 30px) scale(1.1); }
+            66% { transform: translate(-20px, 15px) scale(0.95); }
+        }
+
+        @keyframes drift2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-40px, -20px) scale(1.15); }
+            66% { transform: translate(30px, -15px) scale(0.9); }
+        }
+
+        .bg-vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 4;
+            background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
+            pointer-events: none;
+        }
+
+        .card {
+            position: relative;
+            z-index: 10;
+            background: var(--surface);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            width: 420px;
+            max-width: 92vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow:
+                0 0 60px rgba(16, 185, 129, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .brand-name {
+            font-size: 42px;
+            font-weight: 200;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            line-height: 1;
+        }
+
+        .brand-name strong {
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #84cc16);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            line-height: 1.1;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .subtitle {
+            font-size: 12px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 9px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.35);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 300;
+            font-family: inherit;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.04);
+            box-shadow:
+                0 0 0 3px rgba(16, 185, 129, 0.08),
+                0 0 16px rgba(16, 185, 129, 0.04);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 300;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-top: 14px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #10b981, #84cc16);
+            letter-spacing: 0.4px;
+            box-shadow:
+                0 4px 12px rgba(16, 185, 129, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 16px 32px -6px rgba(16, 185, 129, 0.35),
+                0 6px 12px -3px rgba(132, 204, 22, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+            transition: all 0.1s ease;
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #result {
+            margin-top: 14px;
+            padding: 16px;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        #result.addicted {
+            display: block;
+            background: rgba(255, 59, 48, 0.06);
+            border: 1px solid rgba(255, 59, 48, 0.15);
+        }
+
+        #result.not-addicted {
+            display: block;
+            background: rgba(16, 185, 129, 0.06);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-emoji {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .result-text {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-details {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .explanation {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .explanation-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .explanation-item {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .explanation-item .icon {
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 24px 16px;
+                border-radius: 20px;
+            }
+            .brand-name {
+                font-size: 34px;
+            }
+            h1 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-base"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-noise"></div>
+    <div class="bg-ambient bg-ambient-1"></div>
+    <div class="bg-ambient bg-ambient-2"></div>
+    <div class="bg-vignette"></div>
+
+    <div class="card">
+        <div class="brand-name"><strong>Un</strong>plug</div>
+
+        <h1>Проверь цифровую зависимость</h1>
+        <p class="subtitle">Три простых вопроса — честный ответ</p>
+
+        <form id="checkForm">
+            <div class="form-group">
+                <label>Экранное время в будни (часов/день)</label>
+                <input type="number" id="dailyScreen" placeholder="7.5" min="0" max="24" step="0.5" required>
+            </div>
+            <div class="form-group">
+                <label>Экранное время в выходные (часов/день)</label>
+                <input type="number" id="weekendScreen" placeholder="9" min="0" max="24" step="0.5" required>
+            </div>
+            <div class="form-group">
+                <label>Время в соцсетях (часов/день)</label>
+                <input type="number" id="socialMedia" placeholder="3" min="0" max="24" step="0.5" required>
+            </div>
+            <button type="submit" class="btn-submit">Проверить</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('checkForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const btn = document.querySelector('.btn-submit');
+            const resultDiv = document.getElementById('result');
+
+            const dailyScreen = Number(document.getElementById('dailyScreen').value);
+            const weekendScreen = Number(document.getElementById('weekendScreen').value);
+            const socialMedia = Number(document.getElementById('socialMedia').value);
+
+            btn.disabled = true;
+            btn.textContent = 'Проверяем...';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        daily_screen_time: dailyScreen,
+                        weekend_screen_time: weekendScreen,
+                        social_media_hours: socialMedia
+                    })
+                });
+                const data = await response.json();
+
+                // Формируем объяснение
+                let explanations = [];
+
+                if (socialMedia > 4.01) {
+                    explanations.push({
+                        icon: '📱',
+                        text: `Соцсети: ${socialMedia}ч (норма < 4ч) — превышение`
+                    });
+                }
+
+                if (weekendScreen > 10.36) {
+                    explanations.push({
+                        icon: '📅',
+                        text: `Выходные: ${weekendScreen}ч (норма < 10.4ч) — превышение`
+                    });
+                }
+
+                if (dailyScreen > 7.97) {
+                    explanations.push({
+                        icon: '⏰',
+                        text: `Будни: ${dailyScreen}ч (норма < 8ч) — превышение`
+                    });
+                }
+
+                if (data.addicted) {
+                    resultDiv.className = 'addicted';
+                    resultDiv.innerHTML = `
+                        <div class="result-emoji">📱</div>
+                        <div class="result-text">Вы зависимы</div>
+                        <div class="result-details">
+                            Будни: ${dailyScreen}ч · Выходные: ${weekendScreen}ч · Соцсети: ${socialMedia}ч
+                        </div>
+                        <div class="explanation">
+                            <div class="explanation-title">Почему вы зависимы:</div>
+                            ${explanations.map(e => `
+                                <div class="explanation-item">
+                                    <span class="icon">${e.icon}</span>
+                                    <span>${e.text}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.className = 'not-addicted';
+                    resultDiv.innerHTML = `
+                        <div class="result-emoji">✨</div>
+                        <div class="result-text">Вы свободны</div>
+                        <div class="result-details">
+                            Будни: ${dailyScreen}ч · Выходные: ${weekendScreen}ч · Соцсети: ${socialMedia}ч
+                        </div>
+                        <div class="explanation">
+                            <div class="explanation-title">Ваши показатели в норме:</div>
+                            <div class="explanation-item">
+                                <span class="icon">✅</span>
+                                <span>Все параметры в пределах нормы</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'not-addicted';
+                resultDiv.innerHTML = `
+                    <div class="result-emoji">⚠️</div>
+                    <div class="result-text">Ошибка</div>
+                    <div class="result-details">Попробуйте снова</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Проверить';
+            }
+        });
+    </script>
+</body>
+</html>
