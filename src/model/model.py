@@ -1,18 +1,14 @@
-# src/model/unplug_predictor.py
 """
 Unplug - Smartphone Addiction Predictor
-Использует Decision Tree модель напрямую
 """
-
-import joblib
 from pathlib import Path
-
+import joblib
+import pandas as pd
 
 class UnplugPredictor:
     """
-    Предиктор зависимости на основе Decision Tree
+    The main predictor class.
     """
-
     def __init__(self, model_path=None):
         if model_path is None:
             model_path = Path(__file__).resolve().parent.parent.parent / "models" / "tree" / "decision_tree_v1.pkl"
@@ -22,26 +18,23 @@ class UnplugPredictor:
 
     def predict(self, daily_screen_time, weekend_screen_time, social_media_hours):
         """
-        Предсказание зависимости
+        Predicting addiction.
 
         Args:
-            daily_screen_time: экранное время в будни (часы/день)
-            weekend_screen_time: экранное время в выходные (часы/день)
-            social_media_hours: время в соцсетях (часы/день)
+            daily_screen_time: float
+            weekend_screen_time: float
+            social_media_hours: float
 
         Returns:
             dict: {'addicted': bool, 'message': str, 'probability': float}
         """
-        import pandas as pd
 
-        # Формируем DataFrame
         user_data = pd.DataFrame([[
             social_media_hours,
             daily_screen_time,
             weekend_screen_time
         ]], columns=self.features)
 
-        # Предсказание
         prediction = self.model.predict(user_data)[0]
         probability = self.model.predict_proba(user_data)[0]
 
@@ -59,7 +52,3 @@ class UnplugPredictor:
                 'result': "НЕ ЗАВИСИМ",
                 'probability': float(probability[0])
             }
-
-    def get_importance(self):
-        """Важность признаков"""
-        return dict(zip(self.features, self.model.feature_importances_))
